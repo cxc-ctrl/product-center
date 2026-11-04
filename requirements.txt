@@ -1,0 +1,2 @@
+Pillow==12.3.0
+pypinyin==0.55.0

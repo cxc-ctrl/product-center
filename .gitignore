@@ -1,0 +1,15 @@
+data/
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env*
+!.env.example
+_qa/
+_release/
+_incoming/
+*.sqlite*
+*.db
+*.log
+*.before-*
+preview.jpg

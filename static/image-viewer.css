@@ -1,0 +1,22 @@
+.image-view-button{display:block;border:0;padding:0;margin:0;width:100%;height:100%;background:transparent;cursor:zoom-in}
+/* Image triggers fill the tile; star/remove controls keep their small button size. */
+.image-gallery .gallery-item>.image-view-button{position:absolute;inset:0;display:block;width:100%;height:100%;padding:0;margin:0;border:0;border-radius:0;background:transparent}
+.image-gallery .gallery-item>.image-view-button img{display:block;width:100%;height:100%;object-fit:cover}
+.cover-preview .cover-label,.cover-preview .large-image-hint{pointer-events:none}
+.image-viewer{inset:0;margin:0;padding:0;border:0;border-radius:0;width:100vw;height:100dvh;max-width:none;max-height:none;color:#fff;background:rgba(13,24,36,.96);overflow:hidden}
+.image-viewer::backdrop{background:rgba(13,24,36,.8)}
+.image-viewer[open]{display:flex;flex-direction:column}
+.image-viewer-toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 22px;min-height:68px;flex-shrink:0}
+.image-viewer-toolbar p{margin:0;font-size:14px;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.image-viewer button{display:flex;align-items:center;justify-content:center;width:44px;height:44px;flex-shrink:0;border:1px solid #ffffff40;border-radius:8px;background:#ffffff16;color:white;cursor:pointer}
+.image-viewer button:hover{background:#ffffff30}.image-viewer button:disabled{opacity:.3;cursor:default}
+.image-viewer button:focus-visible{outline:2px solid #f47e3e;outline-offset:3px}
+.image-viewer button svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.6}
+.image-viewer-stage{position:relative;display:flex;align-items:center;justify-content:center;flex:1;min-height:0;padding:8px 84px 24px}
+.image-viewer-stage img{display:block;max-width:100%;max-height:100%;object-fit:contain;min-width:0;min-height:0}
+.image-viewer-stage [data-image-step]{position:absolute;top:50%;transform:translateY(-50%)}
+.image-viewer-stage [data-image-step="-1"]{left:20px}.image-viewer-stage [data-image-step="1"]{right:20px}
+.image-viewer-status{position:absolute;bottom:0;left:68px;right:68px;padding:8px;text-align:center;color:#dce6f1;font-size:13px;pointer-events:none}
+@media(max-width:760px){.image-viewer-toolbar{padding:10px 12px}.image-viewer-stage{padding:8px 52px 24px}.image-viewer button{width:36px;height:42px}.image-viewer-stage [data-image-step="-1"]{left:8px}.image-viewer-stage [data-image-step="1"]{right:8px}.image-viewer-toolbar p{font-size:12px}}
+
+.image-viewer-toolbar p{white-space:normal;overflow-wrap:anywhere;line-height:1.5}

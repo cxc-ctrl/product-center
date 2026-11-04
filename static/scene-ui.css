@@ -1,0 +1,10 @@
+.scene-field-heading{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.scene-field-heading .text-button,#scene-filter-manage{font-size:11px;padding:0 4px}
+#material-summary{min-height:38px;border:1px solid var(--border,#d8e2ed);border-radius:5px;padding:9px 12px;background:#f6f9fc;white-space:normal;overflow-wrap:anywhere;font-weight:400}
+.cost-cell label{display:flex;align-items:center;gap:4px;color:#60748a;font-size:11px}
+.cost-cell label input{min-width:80px}
+.cost-cell small{display:block;font-size:11px;color:#60748a}
+.variant-table [aria-invalid="true"]{border:2px solid #df5b38;outline:none;background:#fff6f2}
+#variant-validation{margin:10px 0;padding:10px 14px;border:1px solid #edbcae;background:#fff6f2;border-radius:6px;color:#a2381d}
+#variant-validation ul{margin:8px 0;padding-left:20px;max-height:140px;overflow:auto}
+#variant-validation button{color:#a2381d;text-align:left}

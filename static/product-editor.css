@@ -1,0 +1,117 @@
+/* The product editor uses the full page, with its own navigation and actions. */
+.product-dialog{
+  inset:0;
+  margin:0;
+  width:100vw;
+  height:100dvh;
+  max-width:none;
+  max-height:100dvh;
+  border:0;
+  border-radius:0;
+  box-shadow:none;
+}
+/* Keep the setup compact and reserve the remaining height for SKU editing. */
+.product-dialog .drawer-header{padding-top:10px;padding-bottom:10px}
+.product-dialog .drawer-header .eyebrow{display:none}
+.product-dialog .drawer-header h2{font-size:20px}
+.product-dialog .editor-tabs>button{padding-top:8px;padding-bottom:8px;font-size:13px}
+.product-dialog .drawer-footer{padding-top:9px;padding-bottom:9px}
+.product-dialog .drawer-footer .button{min-height:34px;padding-top:7px;padding-bottom:7px}
+.product-dialog .drawer-body:has(#pane-variants:not([hidden])){display:flex;flex-direction:column;overflow:hidden;padding:10px 20px}
+.product-dialog #pane-variants:not([hidden]){display:flex;flex-direction:column;flex:1;min-height:0}
+.product-dialog #pane-variants .variant-toolbar{margin-bottom:5px;gap:10px;flex:none}
+.product-dialog #pane-variants .variant-toolbar>div:first-child{display:flex;gap:12px;align-items:baseline}
+.product-dialog #pane-variants .variant-toolbar h3{margin:0;font-size:14px}
+.product-dialog #pane-variants .variant-toolbar p{font-size:11px}
+.product-dialog #pane-variants .variant-actions{flex-direction:row;gap:7px}
+.product-dialog #pane-variants .variant-actions .button{min-height:30px;padding:5px 9px}
+.product-dialog .variant-help{display:block;flex:none;padding:5px 8px;margin:0 0 6px;font-size:11px}
+.product-dialog .variant-help>summary{cursor:pointer;color:#718397}
+.product-dialog .variant-help p{margin:5px 0 0;font-size:11px;line-height:1.5}
+.product-dialog .batch-builder{padding:8px 10px;margin:0 0 8px;max-height:32dvh;overflow:auto;flex:none}
+.product-dialog .batch-heading{align-items:center;gap:8px;margin-bottom:4px}
+.product-dialog .batch-heading>div{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.product-dialog .batch-heading h3{font-size:13px;margin:0}
+.product-dialog .batch-edit-help{font-size:11px;color:#8191a3}
+.product-dialog .batch-edit-help>summary,.product-dialog .supply-help>summary{cursor:pointer}
+.product-dialog .batch-edit-help p{margin:4px 0;font-size:11px;line-height:1.4}
+.product-dialog .batch-rule-details>summary{padding-bottom:5px;font-size:11px}
+.product-dialog .batch-rule-grid{gap:7px}
+.product-dialog .batch-rule-grid .field{gap:3px;font-size:11px}
+.product-dialog .batch-rule-grid input,.product-dialog .batch-rule-grid select{padding:6px 8px;font-size:12px;min-height:30px}
+.product-dialog .batch-auto{margin:5px 0;font-size:11px}
+.product-dialog .batch-builder .product-supply-settings{margin:5px 0;padding:7px 9px}
+.product-dialog .batch-builder .product-supply-settings h3{font-size:12px;margin:0 0 3px}
+.product-dialog .batch-builder .warehouse-fields{gap:8px;margin:3px 0}
+.product-dialog .batch-builder .warehouse-fields .field{gap:3px;margin:0;font-size:11px}
+.product-dialog .batch-builder .warehouse-fields select{padding:6px 8px;font-size:12px;min-height:30px}
+.product-dialog .supply-help{font-size:11px;color:#8191a3;line-height:1.4;margin-top:4px}
+.product-dialog .supply-help p{margin:4px 0 0;font-size:11px;line-height:1.4}
+.product-dialog .batch-feedback{font-size:11px;margin:4px 0;line-height:1.4}
+.product-dialog .batch-upload-zone{gap:8px;padding:5px 7px;margin-top:5px}
+.product-dialog .batch-upload-zone span{font-size:11px;line-height:1.4}
+.product-dialog .batch-upload-zone .button{min-height:29px;padding:5px 9px}
+.product-dialog .batch-design-title{font-size:11px;margin:4px 0}
+.product-dialog .batch-designs{grid-template-columns:repeat(auto-fill,minmax(62px,1fr));gap:6px;max-height:124px}
+.product-dialog .batch-design{padding:4px;gap:2px;font-size:11px;min-height:48px}
+.product-dialog .batch-design>svg{height:21px;width:21px}
+.product-dialog .batch-design img{height:36px}
+.product-dialog .batch-design small{display:none}
+.product-dialog .batch-pool-wrap{margin-top:5px}
+.product-dialog #pane-variants .variant-table-wrap{flex:1;min-height:130px;max-height:none;overflow:auto}
+.product-dialog .variant-table th{padding:7px 6px;font-size:11px}
+.product-dialog .variant-table td{padding:5px 6px}
+.product-dialog .variant-table input,.product-dialog .variant-table select{padding:6px 7px;font-size:12px;min-height:30px}
+.product-dialog .variant-photo{width:36px;height:34px}
+.product-dialog .cost-cell{grid-template-columns:minmax(130px,1fr) minmax(70px,auto);gap:6px;align-items:center;min-width:220px}
+.product-dialog .cost-estimate{padding:1px 3px;font-size:11px;line-height:1.3}
+.product-dialog .variant-footnote{flex:none;margin:5px 0 0;font-size:11px;line-height:1.3}
+.product-dialog .batch-supply-details,.product-dialog .batch-style-images{font-size:11px;color:#718397;margin:5px 0}
+.product-dialog .batch-supply-details>summary,.product-dialog .batch-style-images>summary{cursor:pointer;padding:3px 0}
+.product-dialog .batch-supply-details small,.product-dialog .batch-style-images small{font-size:10px;color:#91a0ae;margin-left:7px}
+@media(min-width:1200px){
+  .product-dialog .batch-rule-grid{grid-template-columns:minmax(150px,2fr) minmax(65px,.65fr) minmax(125px,1.2fr) minmax(65px,.65fr) repeat(2,minmax(75px,.8fr)) minmax(100px,1fr)}
+  .product-dialog .batch-rule-grid .field:first-child{grid-column:auto}
+}
+@media(max-width:700px){
+  .product-dialog .drawer-body:has(#pane-variants:not([hidden])){padding:8px 12px}
+  .product-dialog #pane-variants .variant-toolbar>div:first-child{display:block}
+  .product-dialog #pane-variants .variant-toolbar p{display:none}
+  .product-dialog .batch-builder{max-height:32dvh}
+  .product-dialog .batch-builder .product-supply-settings .warehouse-fields{grid-template-columns:1fr}
+  .product-dialog .variant-help p{max-height:100px;overflow:auto}
+}
+body:has(.product-dialog[open]){overflow:hidden}
+.product-dialog .editor-heading{display:flex;align-items:center;gap:22px;min-width:0}
+.product-dialog .editor-heading>div{min-width:0}
+.product-dialog .editor-back{flex:none;font-size:13px}
+.product-dialog .drawer-header,.product-dialog .drawer-footer{padding-left:32px;padding-right:32px}
+.product-dialog .editor-tabs{padding-left:32px;padding-right:32px}
+.product-dialog .drawer-body{padding:28px 32px 36px}
+.product-dialog .variant-table-wrap{max-height:min(68dvh,900px)}
+@media(min-width:1200px){
+  .product-dialog .basic-layout{grid-template-columns:minmax(0,1fr) 360px;gap:40px}
+}
+@media(max-width:700px){
+  .product-dialog .editor-heading{gap:10px}
+  .product-dialog .editor-back{padding:7px;min-height:34px}
+  .product-dialog .editor-back span:last-child{display:none}
+  .product-dialog .drawer-header,.product-dialog .drawer-footer,.product-dialog .editor-tabs{padding-left:16px;padding-right:16px}
+  .product-dialog .drawer-body{padding:20px 16px 28px}
+  .product-dialog .drawer-header h2{max-width:calc(100vw - 130px)}
+  .product-dialog .variant-table-wrap{max-height:65dvh}
+}
+
+/* Named designs keep preview and image assignment separate. */
+.product-dialog #batch-designs{grid-template-columns:repeat(auto-fill,140px);max-height:260px;gap:8px}
+.product-dialog .batch-style-card{padding:6px;border:1px solid #dbe5ee;border-radius:7px;background:#fff;display:grid;gap:4px;min-width:0}
+.product-dialog .batch-style-card .batch-design{border:0;width:100%;padding:2px;min-height:60px;cursor:zoom-in}
+.product-dialog .batch-style-card .batch-design img{height:56px;width:100%;object-fit:contain}
+.product-dialog .batch-style-name{display:grid;gap:3px;font-size:10px;color:#718397}
+.product-dialog .batch-style-name input{width:100%;min-width:0;padding:5px 6px;min-height:28px;font-size:12px}
+.product-dialog .batch-change-photo,.product-dialog .batch-pool-card>.text-button{padding:2px 4px;min-height:23px;font-size:11px;justify-content:center}
+.product-dialog .batch-pool-card{display:grid;gap:2px;width:76px}
+.product-dialog .batch-pool-card .batch-pool-image{width:100%;cursor:zoom-in}
+.product-dialog .variant-photo-tools{display:flex;align-items:center;gap:5px;white-space:nowrap}
+.product-dialog .variant-photo[data-view-image]{cursor:zoom-in}
+.product-dialog .variant-change-photo{padding:3px 0;min-height:24px;font-size:11px}
