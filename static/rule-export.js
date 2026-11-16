@@ -1,6 +1,6 @@
 (function(root){
  'use strict';
- const HEADERS=['商品编码','商品名称','成本','长','宽','数量'];
+ const HEADERS=['商品编码','商品名称','成本','长','宽','数量','销售价'];
  const unitFactor=u=>/^(mm|毫米)$/.test(u)?0.1:1;
  function dimensions(value){
   const text=String(value||'').normalize('NFKC').toLowerCase().replace(/\s+/g,'');
@@ -17,10 +17,11 @@
   if(!product?.variants?.length)throw Error('当前商品没有销售规格可导出。');
   const warnings=[];
   const data=product.variants.map((v,i)=>{
-   const size=dimensions(v.size),cost=number(costOf(v)),quantity=number(v.pack_qty);
+   const size=dimensions(v.size),cost=number(costOf(v)),quantity=number(v.pack_qty),price=number(v.price);
    if(!size)warnings.push(`第${i+1}行（${v.sku||v.name||'未命名'}）尺寸无法拆分，长、宽已留空。`);
    if(cost==null&&!['定制订单','工单定制'].includes(v.supply_mode||product.supply_defaults?.supply_mode))warnings.push(`第${i+1}行成本待补齐，已留空。`);
-   return [String(v.sku||''),String(v.name||''),cost,size?.[0]??null,size?.[1]??null,quantity];
+   if(price==null)warnings.push(`第${i+1}行销售价待补齐，已留空。`);
+   return [String(v.sku||''),String(v.name||''),cost,size?.[0]??null,size?.[1]??null,quantity,price];
   });
   return {data:[HEADERS,...data],warnings};
  }
@@ -42,14 +43,14 @@
  }
  function workbook(data){
   const ns='http://schemas.openxmlformats.org/spreadsheetml/2006/main';
-  const sheetRows=data.map((row,i)=>'<row r="'+(i+1)+'" ht="'+(i===0?32:25)+'" customHeight="1">'+row.map((v,j)=>{const ref=String.fromCharCode(65+j)+(i+1),style=i===0?1:j===2?2:0;if(v==null)return '<c r="'+ref+'" s="'+style+'"/>';return typeof v==='number'?'<c r="'+ref+'" s="'+style+'"><v>'+v+'</v></c>':'<c r="'+ref+'" s="'+style+'" t="inlineStr"><is><t xml:space="preserve">'+xml(v)+'</t></is></c>';}).join('')+'</row>').join('');
+  const sheetRows=data.map((row,i)=>'<row r="'+(i+1)+'" ht="'+(i===0?32:25)+'" customHeight="1">'+row.map((v,j)=>{const ref=String.fromCharCode(65+j)+(i+1),style=i===0?1:(j===2||j===6)?2:0;if(v==null)return '<c r="'+ref+'" s="'+style+'"/>';return typeof v==='number'?'<c r="'+ref+'" s="'+style+'"><v>'+v+'</v></c>':'<c r="'+ref+'" s="'+style+'" t="inlineStr"><is><t xml:space="preserve">'+xml(v)+'</t></is></c>';}).join('')+'</row>').join('');
   return zip({
    '[Content_Types].xml':'<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>',
    '_rels/.rels':'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>',
    'xl/workbook.xml':'<workbook xmlns="'+ns+'" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="商品规则" sheetId="1" r:id="rId1"/></sheets></workbook>',
    'xl/_rels/workbook.xml.rels':'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>',
    'xl/styles.xml':'<styleSheet xmlns="'+ns+'"><numFmts count="1"><numFmt numFmtId="164" formatCode="0.########"/></numFmts><fonts count="2"><font><sz val="11"/><name val="Microsoft YaHei"/></font><font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="Microsoft YaHei"/></font></fonts><fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF274A60"/><bgColor indexed="64"/></patternFill></fill></fills><borders count="1"><border/></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="3"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyAlignment="1"><alignment vertical="center"/></xf><xf numFmtId="164" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>',
-   'xl/worksheets/sheet1.xml':'<worksheet xmlns="'+ns+'"><dimension ref="A1:F'+data.length+'"/><sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews><cols><col min="1" max="1" width="38" customWidth="1"/><col min="2" max="2" width="44" customWidth="1"/><col min="3" max="6" width="15" customWidth="1"/></cols><sheetData>'+sheetRows+'</sheetData><autoFilter ref="A1:F'+data.length+'"/></worksheet>'
+   'xl/worksheets/sheet1.xml':'<worksheet xmlns="'+ns+'"><dimension ref="A1:G'+data.length+'"/><sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews><cols><col min="1" max="1" width="38" customWidth="1"/><col min="2" max="2" width="44" customWidth="1"/><col min="3" max="7" width="15" customWidth="1"/></cols><sheetData>'+sheetRows+'</sheetData><autoFilter ref="A1:G'+data.length+'"/></worksheet>'
   });
  }
  const api={dimensions,rows,workbook};root.RuleExport=api;if(typeof module!=='undefined')module.exports=api;

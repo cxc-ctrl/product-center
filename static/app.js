@@ -375,8 +375,8 @@ async function exportProductRules(){
     const draft=state.draft,result=RuleExport.rows(draft,v=>ProductCost.estimate(v,draft,state.products,state.warehouseRules?.config).cost);
     const bytes=RuleExport.workbook(result.data),filename=(String($('#product-form').elements.name.value||draft.name||'商品').replace(/[\\/:*?"<>|\x00-\x1f]/g,'_').slice(0,100)||'商品')+'-商品规则.xlsx';
     await saveResponse(new Response(bytes,{headers:{'Content-Type':'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet','Content-Disposition':"attachment; filename*=UTF-8''"+encodeURIComponent(filename)}}),filename);
-    if(result.warnings.length)openUtility('规则已导出，请核对空白项',`<p>已导出当前 ${result.data.length-1} 个销售规格。成本为元/份，长、宽为厘米；无法确定的内容留空，没有按 0 处理。</p><ul>${result.warnings.map(w=>'<li>'+escapeHTML(w)+'</li>').join('')}</ul>`,[{label:'知道了',class:'primary',action:closeUtility}]);
-    else toast(`已导出 ${result.data.length-1} 个销售规格；成本为元/份，长、宽为厘米。`);
+    if(result.warnings.length)openUtility('规则已导出，请核对空白项',`<p>已导出当前 ${result.data.length-1} 个销售规格。成本和销售价为元/份，长、宽为厘米；无法确定的内容留空，没有按 0 处理。</p><ul>${result.warnings.map(w=>'<li>'+escapeHTML(w)+'</li>').join('')}</ul>`,[{label:'知道了',class:'primary',action:closeUtility}]);
+    else toast(`已导出 ${result.data.length-1} 个销售规格；成本和销售价为元/份，长、宽为厘米。`);
   }catch(error){toast(error.message,true);}finally{button.disabled=false;}
 }
 function showExport(){
