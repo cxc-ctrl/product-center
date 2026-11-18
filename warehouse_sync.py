@@ -98,12 +98,31 @@ def _handle_sync(handler,path,raw):
    if i:part['basis']=remote({'action':'product_center_sync_preview','request_id':secrets.token_hex(16),'bundle':part['body']})['syncPreview']['basis']
    payload={'action':'product_center_sync','request_id':'pc-sync-'+hashlib.sha256((token+':'+str(i)).encode()).hexdigest(),'bundle':part['body'],'expected_basis':part['basis']}
    remote(payload);plan['next']+=1
+  # All SKU batches must arrive before deriving any shared physical unit cost.
+  # Reconcile against every linked SKU in the warehouse, not just one batch.
+  cost_results={'changes':{},'unchanged':{},'skipped':{}}
+  variants=[v for part in plan['batches'] for v in part['body']['variants']]
+  for at in range(0,len(variants),2000):
+   with db() as con:
+    for pid,revision in plan['products']+plan.get('dependencies',[]):
+     current=con.execute('SELECT revision,archived FROM products WHERE id=?',(pid,)).fetchone()
+     if not current or current['archived'] or current['revision']!=revision:raise Problem('商品资料已更新，请重新同步后核对实物成本。',409)
+   selection=[{k:v[k] for k in ('sku','product_id','revision')} for v in variants[at:at+2000]]
+   result=remote({'action':'product_center_sync_costs','request_id':'pc-cost-'+hashlib.sha256((token+':'+str(at)).encode()).hexdigest(),'variants':selection})['physicalCosts']
+   for key in cost_results:
+    for item in result.get(key,[]):cost_results[key][item['code']]=item
+  physical_costs={key:list(value.values()) for key,value in cost_results.items()}
+  for code in cost_results['changes']:cost_results['unchanged'].pop(code,None)
+  physical_costs['unchanged']=list(cost_results['unchanged'].values())
   with LOCK,db() as con:
    for pid,revision in plan['products']:
     now=int(time.time()*1000)
+    codes={v['sku'] for v in variants if v['product_id']==pid}
+    warnings=[r for r in physical_costs['skipped'] if r.get('warning') and codes.intersection(r['codes'])]
+    warning='；'.join(r['code']+'：'+r['reason'] for r in warnings)[:500]
     con.execute('INSERT INTO warehouse_syncs VALUES(?,?,?) ON CONFLICT(product_id) DO UPDATE SET revision=excluded.revision,at=excluded.at',(pid,revision,now))
-    con.execute("INSERT INTO warehouse_sync_states VALUES(?,?,'synced','',?,?) ON CONFLICT(product_id) DO UPDATE SET revision=excluded.revision,status=excluded.status,error='',at=excluded.at,rules_basis=excluded.rules_basis",(pid,revision,now,plan['rules_basis']))
-  return {'ok':True,'products':len(plan['products']),'completed_batches':plan['next']}
+    con.execute("INSERT INTO warehouse_sync_states VALUES(?,?,'synced',?,?,?) ON CONFLICT(product_id) DO UPDATE SET revision=excluded.revision,status=excluded.status,error=excluded.error,at=excluded.at,rules_basis=excluded.rules_basis",(pid,revision,warning,now,plan['rules_basis']))
+  return {'ok':True,'products':len(plan['products']),'skus':len(variants),'completed_batches':plan['next'],'physical_costs':physical_costs}
  finally:plan['busy']=False
 
 
